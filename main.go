@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+
+	"github.com/anhdvu/mock_remote_api/utils"
 )
 
 func processRemoteAPI(w http.ResponseWriter, r *http.Request) {
@@ -66,6 +68,9 @@ func main() {
 	http.HandleFunc("/code1", processRemoteAPI)
 
 	http.HandleFunc("/code-9", processRemoteAPI)
+	// s := "0021543093400000053300412000000000700026047299049033440850025003ADJ25110Adjustment25304907025400255002560203"
+	s := "00200"
+	walletutils.KLVSplitter(s)
 
 	log.Fatal(http.ListenAndServe(":80", nil))
 }
