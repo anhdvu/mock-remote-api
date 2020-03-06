@@ -58,6 +58,8 @@ func KLVSplitter(s string) {
 			fmt.Printf("%s --- %s --- %s --- %s\n", value, klvElem[0], klvElem[1], klvElem[2])
 		} else {
 			fmt.Printf("Unknown --- %s --- %s --- %s\n", klvElem[0], klvElem[1], klvElem[2])
+			fmt.Println("NOT a proper KLV - Error: unknown key.")
+			break
 		}
 	}
 }
