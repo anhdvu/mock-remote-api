@@ -25,6 +25,7 @@ func KLVSplitter(s string) {
 		"254": "Digitized Pan               ",
 		"255": "Digitized Wallet ID         ",
 		"256": "Adjustment Reason           ",
+		"257": "Reference ID                ",
 		"900": "3D Secure OTP               ",
 		"901": "Digitization Activation     ",
 		"902": "Digitization Complete       ",
