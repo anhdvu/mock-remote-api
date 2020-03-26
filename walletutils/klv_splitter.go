@@ -16,6 +16,7 @@ func KLVSplitter(s string) {
 		"041": "Terminal ID                 ",
 		"042": "Merchant Identifier         ",
 		"049": "Original Currency Code      ",
+		"050": "From Account                ",
 		"052": "Pin Block                   ",
 		"085": "Markup Amount               ",
 		"250": "Capture Mode                ",
@@ -54,6 +55,7 @@ func KLVSplitter(s string) {
 		s = s[(5 + lengthInt):]
 	}
 
+	fmt.Printf("\n******** KLV breakdown ********\n")
 	for _, klvElem := range klvSlices {
 		if value, present := klvMap[klvElem[0]]; present {
 			fmt.Printf("%s --- %s --- %s --- %s\n", value, klvElem[0], klvElem[1], klvElem[2])

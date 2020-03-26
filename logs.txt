@@ -1,0 +1,234 @@
+
+
+
+######## NOTICE: New request received ########
+
+******** Request headers ********
+"User-Agent": [PostmanRuntime/7.24.0]
+"Accept": [*/*]
+"Postman-Token": [74a0e090-02d8-414c-a52c-e3f65badb3fd]
+"Content-Type": [text/plain]
+"Cache-Control": [no-cache]
+"Accept-Encoding": [gzip, deflate, br]
+"Connection": [keep-alive]
+"Content-Length": [1425]
+
+******** Request body in JSON ********
+{
+    "MethodName": "Deduct",
+    "Terminal": "0075005224",
+    "Reference": "5183a485d21c4f8cbd0840cfb839634a",
+    "Amount": "29",
+    "Narrative": "CHN29000CHINA UNIONPAY  SIMULATOR       ",
+    "TxnType": "00",
+    "KLVData": "00215180459000000892004015026047011037120000001032750410812345678042151234567890123450490370205002000850025003QRC25103CUP253043885",
+    "TxnID": "31959",
+    "TxnDate": "20200324T10:57:50",
+    "Checksum": "F249E1A5118E7B4782D1B5D623DDB867EAB4536F"
+}
+
+******** KLV breakdown ********
+Tracking Number              --- 002 --- 15 --- 180459000000892
+Original Transaction Amount  --- 004 --- 01 --- 5
+Merchant Category Code       --- 026 --- 04 --- 7011
+Retrieval Reference Number   --- 037 --- 12 --- 000000103275
+Terminal ID                  --- 041 --- 08 --- 12345678
+Merchant Identifier          --- 042 --- 15 --- 123456789012345
+Original Currency Code       --- 049 --- 03 --- 702
+From Account                 --- 050 --- 02 --- 00
+Markup Amount                --- 085 --- 00 --- 
+Capture Mode                 --- 250 --- 03 --- QRC
+Network                      --- 251 --- 03 --- CUP
+Last Four Digits             --- 253 --- 04 --- 3885
+
+******** Response ********
+<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member></struct></value></param></params></methodResponse>
+
+######## INFO: Request parse completed ########
+
+
+
+######## NOTICE: New request received ########
+
+******** Request headers ********
+"User-Agent": [PostmanRuntime/7.24.0]
+"Accept": [*/*]
+"Postman-Token": [b3c4b020-e286-4bc7-b6e0-50548debc55e]
+"Accept-Encoding": [gzip, deflate, br]
+"Connection": [keep-alive]
+"Content-Type": [text/xml]
+"Content-Length": [1170]
+"Cache-Control": [no-cache]
+
+******** Request body in JSON ********
+{
+    "MethodName": "Deduct",
+    "Terminal": "0014770292",
+    "Reference": "5429575429572525",
+    "Amount": "3000",
+    "Narrative": "TTK TEST 1011          SINGAPORE     SGP",
+    "TxnType": "00",
+    "KLVData": "0021529185840000001100404300002604729903712195402981576041000420512345049037020850025004ECOM25110MasterCard252010253042525",
+    "TxnID": "698772",
+    "TxnDate": "20200205T16:09:20",
+    "Checksum": "7ADA6FE76ECD27C008F2A7FF722B56D4C8159277D92AD50C66BD009789D2BAAA"
+}
+
+******** KLV breakdown ********
+Tracking Number              --- 002 --- 15 --- 291858400000011
+Original Transaction Amount  --- 004 --- 04 --- 3000
+Merchant Category Code       --- 026 --- 04 --- 7299
+Retrieval Reference Number   --- 037 --- 12 --- 195402981576
+Terminal ID                  --- 041 --- 00 --- 
+Merchant Identifier          --- 042 --- 05 --- 12345
+Original Currency Code       --- 049 --- 03 --- 702
+Markup Amount                --- 085 --- 00 --- 
+Capture Mode                 --- 250 --- 04 --- ECOM
+Network                      --- 251 --- 10 --- MasterCard
+Fee Type                     --- 252 --- 01 --- 0
+Last Four Digits             --- 253 --- 04 --- 2525
+
+******** Response ********
+<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member></struct></value></param></params></methodResponse>
+
+######## INFO: Request parse completed ########
+
+
+
+######## NOTICE: New request received ########
+
+******** Request headers ********
+"Connection": [keep-alive]
+"Content-Type": [application/xml]
+"User-Agent": [PostmanRuntime/7.24.0]
+"Postman-Token": [5d598568-aa4f-4b3e-a514-e276ce7ac46b]
+"Accept-Encoding": [gzip, deflate, br]
+"Content-Length": [1170]
+"Accept": [*/*]
+"Cache-Control": [no-cache]
+
+******** Request body in JSON ********
+{
+    "MethodName": "Deduct",
+    "Terminal": "0014770292",
+    "Reference": "5429575429572525",
+    "Amount": "3000",
+    "Narrative": "TTK TEST 1011          SINGAPORE     SGP",
+    "TxnType": "00",
+    "KLVData": "0021529185840000001100404300002604729903712195402981576041000420512345049037020850025004ECOM25110MasterCard252010253042525",
+    "TxnID": "698772",
+    "TxnDate": "20200205T16:09:20",
+    "Checksum": "7ADA6FE76ECD27C008F2A7FF722B56D4C8159277D92AD50C66BD009789D2BAAA"
+}
+
+******** KLV breakdown ********
+Tracking Number              --- 002 --- 15 --- 291858400000011
+Original Transaction Amount  --- 004 --- 04 --- 3000
+Merchant Category Code       --- 026 --- 04 --- 7299
+Retrieval Reference Number   --- 037 --- 12 --- 195402981576
+Terminal ID                  --- 041 --- 00 --- 
+Merchant Identifier          --- 042 --- 05 --- 12345
+Original Currency Code       --- 049 --- 03 --- 702
+Markup Amount                --- 085 --- 00 --- 
+Capture Mode                 --- 250 --- 04 --- ECOM
+Network                      --- 251 --- 10 --- MasterCard
+Fee Type                     --- 252 --- 01 --- 0
+Last Four Digits             --- 253 --- 04 --- 2525
+
+******** Response ********
+<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member></struct></value></param></params></methodResponse>
+
+######## INFO: Request parse completed ########
+
+
+
+######## NOTICE: New request received ########
+
+******** Request headers ********
+"User-Agent": [PostmanRuntime/7.24.0]
+"Accept": [*/*]
+"Content-Type": [application/xml]
+"Postman-Token": [d4cebfeb-a1bc-440c-a0cf-06a32715b13f]
+"Accept-Encoding": [gzip, deflate, br]
+"Connection": [keep-alive]
+"Content-Length": [1138]
+"Cache-Control": [no-cache]
+
+******** Request body in JSON ********
+{
+    "MethodName": "Deduct",
+    "Terminal": "0006745244",
+    "Reference": "os-wallet-76326723hb3jn23kn23k23k23",
+    "Amount": "10000",
+    "Narrative": "Tutuka Test Shop       Mexico City   MEX",
+    "TxnType": "00",
+    "KLVData": "002153093631000000070040510000026047299049034840850025003EMV25110MasterCard2530497652540025500",
+    "TxnID": "782254",
+    "TxnDate": "20200220T10:11:37",
+    "Checksum": "A2CC85DACC6457FE6E4305319C7D9051E959A290"
+}
+
+******** KLV breakdown ********
+Tracking Number              --- 002 --- 15 --- 309363100000007
+Original Transaction Amount  --- 004 --- 05 --- 10000
+Merchant Category Code       --- 026 --- 04 --- 7299
+Original Currency Code       --- 049 --- 03 --- 484
+Markup Amount                --- 085 --- 00 --- 
+Capture Mode                 --- 250 --- 03 --- EMV
+Network                      --- 251 --- 10 --- MasterCard
+Last Four Digits             --- 253 --- 04 --- 9765
+Digitized Pan                --- 254 --- 00 --- 
+Digitized Wallet ID          --- 255 --- 00 --- 
+
+******** Response ********
+<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member></struct></value></param></params></methodResponse>
+
+######## INFO: Request parse completed ########
+
+
+
+######## NOTICE: New request received ########
+
+******** Request headers ********
+"0029504320": [3983250115]
+"Content-Type": [text/plain]
+"Cache-Control": [no-cache]
+"Connection": [keep-alive]
+"User-Agent": [PostmanRuntime/7.24.0]
+"Accept": [*/*]
+"Postman-Token": [2c0d0c83-7192-47b5-8db3-60d8a34a8fcb]
+"Accept-Encoding": [gzip, deflate, br]
+"Content-Length": [794]
+
+******** Request body in JSON ********
+{
+    "MethodName": "Deduct",
+    "Terminal": "0029504320",
+    "Reference": "556789731480",
+    "Amount": "2320000",
+    "Narrative": "TTK FOREX ADJ          HANOI         VNM",
+    "TxnType": "00",
+    "KLVData": "002157613861000015920041200000000000102604601103712279411882984041000420512345049038400520025003MAG25110MasterCard252010253044562",
+    "TxnID": "500001",
+    "TxnDate": "20190821T14:01:55",
+    "Checksum": "C0B2AB2A7DA79FC60B32B73474EF9E84C9CA8367"
+}
+
+******** KLV breakdown ********
+Tracking Number              --- 002 --- 15 --- 761386100001592
+Original Transaction Amount  --- 004 --- 12 --- 000000000001
+Merchant Category Code       --- 026 --- 04 --- 6011
+Retrieval Reference Number   --- 037 --- 12 --- 279411882984
+Terminal ID                  --- 041 --- 00 --- 
+Merchant Identifier          --- 042 --- 05 --- 12345
+Original Currency Code       --- 049 --- 03 --- 840
+Pin Block                    --- 052 --- 00 --- 
+Capture Mode                 --- 250 --- 03 --- MAG
+Network                      --- 251 --- 10 --- MasterCard
+Fee Type                     --- 252 --- 01 --- 0
+Last Four Digits             --- 253 --- 04 --- 4562
+
+******** Response ********
+<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member></struct></value></param></params></methodResponse>
+
+######## INFO: Request parse completed ########
