@@ -13,7 +13,7 @@ func processRemoteAPI(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "404 NOT FOUND\nPLEASE USE POST METHOD", http.StatusNotFound)
 	} else {
 
-		fmt.Printf("\n\n\n######## NOTICE: New request received ########\n")
+		fmt.Printf("######## NOTICE: New request received ########\n")
 		walletutils.ParseRemoteRequestHeaders(r)
 		requestKLV := walletutils.ParseRemoteRequestBody(r).GetKLV()
 		walletutils.KLVSplitter(requestKLV)
@@ -26,7 +26,7 @@ func processRemoteAPI(w http.ResponseWriter, r *http.Request) {
 		default:
 			fmt.Fprintf(w, "Couldn't find corresponding response code.")
 		}
-		fmt.Printf("\n######## INFO: Request parse completed ########\n")
+		fmt.Printf("\n######## INFO: Request parse completed ########\n\n\n\n")
 	}
 }
 
@@ -40,6 +40,14 @@ func main() {
 	mux.HandleFunc("/code1", processRemoteAPI)
 
 	mux.HandleFunc("/code-9", processRemoteAPI)
+
+	fs := http.FileServer(http.Dir("log"))
+	mux.Handle("/log/", http.StripPrefix("/log/", fs))
+
+	logFile := "log/logs.txt"
+	mux.HandleFunc("/logs/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, logFile)
+	})
 
 	log.Fatal(http.ListenAndServe(":8888", mux))
 }
