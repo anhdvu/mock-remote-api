@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 
@@ -18,13 +19,14 @@ func processRemoteAPI(w http.ResponseWriter, r *http.Request) {
 		requestKLV := walletutils.ParseRemoteRequestBody(r).GetKLV()
 		walletutils.KLVSplitter(requestKLV)
 		codePath := r.URL.Path[(len(r.URL.Path) - 1):]
+		w.Header().Set("content-type", "text/xml")
 		switch codePath {
 		case "1":
-			fmt.Fprintf(w, walletutils.GenerateResponse("1"))
+			w.Write(walletutils.GenerateResponse("1", "Approved"))
 		case "9":
-			fmt.Fprintf(w, walletutils.GenerateResponse("-9"))
+			w.Write(walletutils.GenerateResponse("-9", "Declined"))
 		default:
-			fmt.Fprintf(w, "Couldn't find corresponding response code.")
+			io.WriteString(w, "404")
 		}
 		fmt.Printf("\n######## INFO: Request parse completed ########\n\n\n\n")
 	}

@@ -2,6 +2,7 @@
 package walletutils
 
 import (
+	"bytes"
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
@@ -15,16 +16,16 @@ type respStruct interface {
 
 // Deduct struct type used to hold data of Deduct calls
 type Deduct struct {
-	MethodName string
-	Terminal   string
-	Reference  string
-	Amount     string
-	Narrative  string
-	TxnType    string
-	KLVData    string
-	TxnID      string
-	TxnDate    string
-	Checksum   string
+	MethodName string `json:"method name"`
+	Terminal   string `json:"terminal"`
+	Reference  string `json:"reference"`
+	Amount     string `json:"amount"`
+	Narrative  string `json:"narrative"`
+	TxnType    string `json:"transaction type"`
+	KLVData    string `json:"klv string"`
+	TxnID      string `json:"transaction id"`
+	TxnDate    string `json:"transaction date"`
+	Checksum   string `json:"checksum"`
 }
 
 // GetKLV gets KLV from Deduct calls
@@ -34,17 +35,17 @@ func (dd *Deduct) GetKLV() string {
 
 // Settlement struct type used to hold data of adjustment or reversal calls
 type Settlement struct {
-	MethodName string
-	Terminal   string
-	Reference  string
-	Amount     string
-	Narrative  string
-	KLVData    string
-	RefTxnID   string
-	RefTxnDate string
-	TxnID      string
-	TxnDate    string
-	Checksum   string
+	MethodName string `json:"method name"`
+	Terminal   string `json:"terminal"`
+	Reference  string `json:"reference"`
+	Amount     string `json:"amount"`
+	Narrative  string `json:"narrative"`
+	KLVData    string `json:"klv string"`
+	RefTxnID   string `json:"reference transaction id"`
+	RefTxnDate string `json:"reference transaction date"`
+	TxnID      string `json:"transaction id"`
+	TxnDate    string `json:"transaction date"`
+	Checksum   string `json:"checksum"`
 }
 
 // GetKLV gets KLV from Adjustment calls
@@ -58,9 +59,9 @@ type Call struct {
 	MethodName string   `xml:"methodName"`
 	Params     []struct {
 		Value struct {
-			StringParam string `xml:"string"`
-			IntParam    string `xml:"int"`
-			TimeParam   string `xml:"dateTime.iso8601"`
+			StringParam string `xml:"string,omitempty"`
+			IntParam    string `xml:"int,omitempty"`
+			TimeParam   string `xml:"dateTime.iso8601,omitempty"`
 		} `xml:"value"`
 	} `xml:"params>param"`
 }
@@ -82,7 +83,7 @@ func ParseRemoteRequestBody(r *http.Request) respStruct {
 	}
 	// fmt.Printf("%+v\n", xmlCall)
 
-	var request respStruct
+	var request respStruct // vô duyên vl
 	switch xmlCall.MethodName {
 	case "Deduct":
 		request = &Deduct{
@@ -118,6 +119,13 @@ func ParseRemoteRequestBody(r *http.Request) respStruct {
 		fmt.Println(err)
 	}
 	fmt.Printf("\n******** Request body in JSON ********\n%v\n", string(requestJSON))
+
+	var buf bytes.Buffer
+	enc := json.NewEncoder(&buf)
+	enc.SetIndent("encoder", "  ")
+	enc.Encode(request)
+	fmt.Println(buf.String())
+
 	return request
 }
 
