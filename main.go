@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"io"
+	_ "io"
 	"log"
 	"net/http"
 
@@ -13,23 +13,20 @@ func processRemoteAPI(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "404 NOT FOUND\nPLEASE USE POST METHOD", http.StatusNotFound)
 	} else {
-
 		fmt.Printf("######## NOTICE: New request received ########\n")
-		walletutils.ParseRemoteRequestHeaders(r)
-		requestKLV := walletutils.ParseRemoteRequestBody(r).GetKLV()
-		walletutils.KLVSplitter(requestKLV)
-		codePath := r.URL.Path[(len(r.URL.Path) - 1):]
-		w.Header().Set("content-type", "text/xml")
-		switch codePath {
-		case "1":
+		w.Header().Set("Content-Type", "text/xml")       // Set response header
+		payload := walletutils.ParseRemoteRequestBody(r) // Parse XML in request body to struct
+		parsedReq := walletutils.ParseMethod(payload)    // From general struct to method-specific struct
+		walletutils.DumpJSON(parsedReq)                  // Marshal method-specific struct to JSON and dump to os.Stdout
+		walletutils.KLVSplitter(parsedReq.GetKLV())
+
+		if payload.MethodName == "AdministrativeMessage" {
+			w.Write(walletutils.GenerateResponse("0", "Message has been received"))
+		} else {
 			w.Write(walletutils.GenerateResponse("1", "Approved"))
-		case "9":
-			w.Write(walletutils.GenerateResponse("-9", "Declined"))
-		default:
-			io.WriteString(w, "404")
 		}
-		fmt.Printf("\n######## INFO: Request parse completed ########\n\n\n\n")
 	}
+	fmt.Printf("\n######## INFO: Request parse completed ########\n\n\n\n")
 }
 
 func main() {
@@ -40,8 +37,6 @@ func main() {
 	})
 
 	mux.HandleFunc("/code1", processRemoteAPI)
-
-	mux.HandleFunc("/code-9", processRemoteAPI)
 
 	fs := http.FileServer(http.Dir("log"))
 	mux.Handle("/log/", http.StripPrefix("/log/", fs))
