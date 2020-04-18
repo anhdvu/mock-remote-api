@@ -25,8 +25,9 @@ func procReq(w http.ResponseWriter, r *http.Request) {
 		} else {
 			w.Write(wtools.GenerateResponse("1", "Approved"))
 		}
+		fmt.Printf("\n######## INFO: Request parse completed ########\n\n\n\n")
 	}
-	fmt.Printf("\n######## INFO: Request parse completed ########\n\n\n\n")
+
 }
 
 func main() {
