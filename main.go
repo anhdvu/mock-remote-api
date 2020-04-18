@@ -6,24 +6,25 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/anhdvu/mock_remote_api/walletutils"
+	"github.com/anhdvu/mock_remote_api/wtools"
 )
 
-func processRemoteAPI(w http.ResponseWriter, r *http.Request) {
+func procReq(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "404 NOT FOUND\nPLEASE USE POST METHOD", http.StatusNotFound)
 	} else {
 		fmt.Printf("######## NOTICE: New request received ########\n")
-		w.Header().Set("Content-Type", "text/xml")       // Set response header
-		payload := walletutils.ParseRemoteRequestBody(r) // Parse XML in request body to struct
-		parsedReq := walletutils.ParseMethod(payload)    // From general struct to method-specific struct
-		walletutils.DumpJSON(parsedReq)                  // Marshal method-specific struct to JSON and dump to os.Stdout
-		walletutils.KLVSplitter(parsedReq.GetKLV())
+		w.Header().Set("Content-Type", "text/xml")  // Set response header
+		payload := wtools.ParseRemoteRequestBody(r) // Parse XML in request body to struct
+		parsedReq := wtools.ParseMethod(payload)    // From general struct to method-specific struct
+		wtools.DumpJSON(parsedReq)                  // Marshal method-specific struct to JSON and dump to os.Stdout
+		wtools.KLVSplitter(parsedReq.KLV())
+		fmt.Println(parsedReq.String())
 
 		if payload.MethodName == "AdministrativeMessage" {
-			w.Write(walletutils.GenerateResponse("0", "Message has been received"))
+			wtools.GenerateResponse("0", "Messave has been received")
 		} else {
-			w.Write(walletutils.GenerateResponse("1", "Approved"))
+			wtools.GenerateResponse("1", "Approved")
 		}
 	}
 	fmt.Printf("\n######## INFO: Request parse completed ########\n\n\n\n")
@@ -33,10 +34,10 @@ func main() {
 	mux := http.NewServeMux()
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hey there!\n Welcome %s", r.URL.Path[1:])
+		fmt.Fprintf(w, "Hey there!\nWelcome %s", r.URL.Path[1:])
 	})
 
-	mux.HandleFunc("/code1", processRemoteAPI)
+	mux.HandleFunc("/code1", procReq)
 
 	fs := http.FileServer(http.Dir("log"))
 	mux.Handle("/log/", http.StripPrefix("/log/", fs))
@@ -45,6 +46,6 @@ func main() {
 	mux.HandleFunc("/logs/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, logFile)
 	})
-
+	log.Println("Wallet (Companion Remote API) v0.1 is listening on port 8888")
 	log.Fatal(http.ListenAndServe(":8888", mux))
 }

@@ -1,5 +1,5 @@
-// Package walletutils implements an additional function to analyze XMLs in Remote API request body
-package walletutils
+// Package wtools implements an additional function to analyze XMLs in Remote API request body
+package wtools
 
 import (
 	// "bytes"
@@ -10,8 +10,9 @@ import (
 	"net/http"
 )
 
-type reqKLV interface {
-	GetKLV() string
+type KLVer interface {
+	KLV() string
+	String() string
 }
 
 // Deduct struct type used to hold data of Deduct calls.
@@ -29,8 +30,13 @@ type Deduct struct {
 }
 
 // GetKLV gets KLV from Deduct calls.
-func (dd *Deduct) GetKLV() string {
+func (dd *Deduct) KLV() string {
 	return dd.KLVData
+}
+
+// String returns string to hash
+func (dd *Deduct) String() string {
+	return fmt.Sprint(dd.MethodName + dd.Terminal + dd.Reference + dd.Amount + dd.Narrative + dd.TxnType + dd.KLVData + dd.TxnID + dd.TxnDate)
 }
 
 // Settlement struct type used to hold data of adjustment or reversal calls.
@@ -49,8 +55,13 @@ type Settlement struct {
 }
 
 // GetKLV gets KLV from adjustment or reversal calls.
-func (settle *Settlement) GetKLV() string {
-	return settle.KLVData
+func (st *Settlement) KLV() string {
+	return st.KLVData
+}
+
+// String returns string to hash
+func (st *Settlement) String() string {
+	return fmt.Sprint(st.MethodName + st.Terminal + st.Reference + st.Amount + st.Narrative + st.KLVData + st.RefTxnID + st.RefTxnDate + st.TxnID + st.TxnDate)
 }
 
 // AdminMessage struct type used to hold data of administrative message calls.
@@ -65,8 +76,13 @@ type AdminMessage struct {
 }
 
 // GetKLV gets KLV from administrative message calls.
-func (admmsg *AdminMessage) GetKLV() string {
-	return admmsg.KLVData
+func (adm *AdminMessage) KLV() string {
+	return adm.KLVData
+}
+
+// String returns message type
+func (adm *AdminMessage) String() string {
+	return adm.MsgType
 }
 
 // Payload struct type used to parse all XML to struct based data type with which Go can work.
@@ -84,14 +100,14 @@ type Payload struct {
 
 // ParseRemoteRequestBody parses incoming requests to JSON and print to stdout.
 func ParseRemoteRequestBody(r *http.Request) *Payload {
-	rBodyBytes, err := ioutil.ReadAll(r.Body)
+	rawBody, err := ioutil.ReadAll(r.Body)
 	defer r.Body.Close()
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	xmlPayload := &Payload{}
-	err = xml.Unmarshal(rBodyBytes, xmlPayload)
+	err = xml.Unmarshal(rawBody, xmlPayload)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -100,8 +116,8 @@ func ParseRemoteRequestBody(r *http.Request) *Payload {
 }
 
 //  ParseMethod parses payload struct to a specific api method.
-func ParseMethod(payload *Payload) reqKLV {
-	var request reqKLV // vô duyên vl
+func ParseMethod(payload *Payload) KLVer {
+	var request KLVer // vô duyên vl
 	switch payload.MethodName {
 	case "Deduct":
 		request = &Deduct{
@@ -146,7 +162,7 @@ func ParseMethod(payload *Payload) reqKLV {
 }
 
 // DumpJSON function dumps parsed request to os.Stdout in JSON format.
-func DumpJSON(reqBody reqKLV) {
+func DumpJSON(reqBody KLVer) {
 	reqJSON, err := json.MarshalIndent(reqBody, "", "    ")
 	if err != nil {
 		fmt.Println(err)

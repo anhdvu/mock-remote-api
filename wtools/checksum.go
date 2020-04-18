@@ -1,5 +1,5 @@
-// Package walletutils implements an additional function to analyze XMLs in Remote API request body
-package walletutils
+// Package wtools implements an additional function to analyze XMLs in Remote API request body
+package wtools
 
 import (
 	"crypto/hmac"

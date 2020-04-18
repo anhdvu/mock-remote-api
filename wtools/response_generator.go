@@ -1,5 +1,5 @@
-// Package walletutils implements an additional function to analyze XMLs in Remote API request body
-package walletutils
+// Package wtools implements an additional function to analyze XMLs in Remote API request body
+package wtools
 
 import (
 	"encoding/xml"
@@ -23,7 +23,7 @@ type member struct {
 
 // GenerateResponse generates XML response.
 func GenerateResponse(resultCode, resultMessage string) []byte {
-	response := &methodResponse{}
+	response := methodResponse{}
 
 	member1 := member{}
 	member1.Name = "resultCode"
