@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	_ "io"
 	"log"
 	"net/http"
 
@@ -19,12 +18,12 @@ func procReq(w http.ResponseWriter, r *http.Request) {
 		parsedReq := wtools.ParseMethod(payload)    // From general struct to method-specific struct
 		wtools.DumpJSON(parsedReq)                  // Marshal method-specific struct to JSON and dump to os.Stdout
 		wtools.KLVSplitter(parsedReq.KLV())
-		fmt.Println(parsedReq.String())
+		fmt.Printf("\n******** String to hash ********\n%q\n", parsedReq.String())
 
 		if payload.MethodName == "AdministrativeMessage" {
-			wtools.GenerateResponse("0", "Messave has been received")
+			w.Write(wtools.GenerateResponse("0", "Messave has been received"))
 		} else {
-			wtools.GenerateResponse("1", "Approved")
+			w.Write(wtools.GenerateResponse("1", "Approved"))
 		}
 	}
 	fmt.Printf("\n######## INFO: Request parse completed ########\n\n\n\n")
