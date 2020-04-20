@@ -10,13 +10,13 @@ import (
 	"net/http"
 )
 
-type KLVer interface {
+type ReqData interface {
 	KLV() string
 	String() string
 }
 
 // Deduct struct type used to hold data of Deduct calls.
-type Deduct struct {
+type DeductLoad struct {
 	MethodName string `json:"method name"`
 	Terminal   string `json:"terminal"`
 	Reference  string `json:"reference"`
@@ -29,14 +29,38 @@ type Deduct struct {
 	Checksum   string `json:"checksum"`
 }
 
-// GetKLV gets KLV from Deduct calls.
-func (dd *Deduct) KLV() string {
+// KLV gets KLV from Deduct calls.
+func (dd *DeductLoad) KLV() string {
 	return dd.KLVData
 }
 
-// String returns string to hash
-func (dd *Deduct) String() string {
+// String returns string to hash.
+func (dd *DeductLoad) String() string {
 	return fmt.Sprint(dd.MethodName + dd.Terminal + dd.Reference + dd.Amount + dd.Narrative + dd.TxnType + dd.KLVData + dd.TxnID + dd.TxnDate)
+}
+
+// LoadAdvice struct used to hold data of LoadAdvice calls.
+type LoadAdvice struct {
+	MethodName string `json:"method name"`
+	Terminal   string `json:"terminal"`
+	Reference  string `json:"reference"`
+	Amount     string `json:"amount"`
+	Narrative  string `json:"narrative"`
+	TxnType    string `json:"transaction type"`
+	KLVData    string `json:"klv string"`
+	TxnID      string `json:"transaction id"`
+	TxnDate    string `json:"transaction date"`
+	Checksum   string `json:"checksum"`
+}
+
+// KLV gets KLV from LoadAdvice calls.
+func (la *LoadAdvice) KLV() string {
+	return la.KLVData
+}
+
+// String returns string to hash.
+func (la *LoadAdvice) String() string {
+	return fmt.Sprint(la.MethodName + la.Terminal + la.Reference + la.Amount + la.Narrative + la.TxnType + la.KLVData + la.TxnID + la.TxnDate)
 }
 
 // Settlement struct type used to hold data of adjustment or reversal calls.
@@ -54,12 +78,12 @@ type Settlement struct {
 	Checksum   string `json:"checksum"`
 }
 
-// GetKLV gets KLV from adjustment or reversal calls.
+// KLV gets KLV from adjustment or reversal calls.
 func (st *Settlement) KLV() string {
 	return st.KLVData
 }
 
-// String returns string to hash
+// String returns string to hash.
 func (st *Settlement) String() string {
 	return fmt.Sprint(st.MethodName + st.Terminal + st.Reference + st.Amount + st.Narrative + st.KLVData + st.RefTxnID + st.RefTxnDate + st.TxnID + st.TxnDate)
 }
@@ -75,7 +99,7 @@ type AdminMessage struct {
 	TxnDate    string `json:"transaction date"`
 }
 
-// GetKLV gets KLV from administrative message calls.
+// KLV gets KLV from administrative message calls.
 func (adm *AdminMessage) KLV() string {
 	return adm.KLVData
 }
@@ -116,11 +140,11 @@ func ParseRemoteRequestBody(r *http.Request) *Payload {
 }
 
 //  ParseMethod parses payload struct to a specific api method.
-func ParseMethod(payload *Payload) KLVer {
-	var request KLVer // vô duyên vl
+func ParseMethod(payload *Payload) ReqData {
+	var request ReqData // vô duyên vl
 	switch payload.MethodName {
-	case "Deduct":
-		request = &Deduct{
+	case "Deduct", "LoadAdvice":
+		request = &DeductLoad{
 			MethodName: payload.MethodName,
 			Terminal:   payload.Params[0].Value.StringParam,
 			Reference:  payload.Params[1].Value.StringParam,
@@ -162,7 +186,7 @@ func ParseMethod(payload *Payload) KLVer {
 }
 
 // DumpJSON function dumps parsed request to os.Stdout in JSON format.
-func DumpJSON(reqBody KLVer) {
+func DumpJSON(reqBody ReqData) {
 	reqJSON, err := json.MarshalIndent(reqBody, "", "    ")
 	if err != nil {
 		fmt.Println(err)
