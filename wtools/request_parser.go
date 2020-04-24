@@ -97,6 +97,7 @@ type AdminMessage struct {
 	KLVData    string `json:"klv string"`
 	TxnID      string `json:"transaction id"`
 	TxnDate    string `json:"transaction date"`
+	Checksum   string `json:"checksum"`
 }
 
 // KLV gets KLV from administrative message calls.
@@ -106,7 +107,7 @@ func (adm *AdminMessage) KLV() string {
 
 // String returns message type
 func (adm *AdminMessage) String() string {
-	return adm.MsgType
+	return fmt.Sprint(adm.MethodName + adm.Terminal + adm.Reference + adm.MsgType + adm.KLVData + adm.TxnID + adm.TxnDate)
 }
 
 // Payload struct type used to parse all XML to struct based data type with which Go can work.
@@ -165,6 +166,7 @@ func ParseMethod(payload *Payload) ReqData {
 			KLVData:    payload.Params[3].Value.StringParam,
 			TxnID:      payload.Params[4].Value.StringParam,
 			TxnDate:    payload.Params[5].Value.TimeParam,
+			Checksum:   payload.Params[6].Value.StringParam,
 		}
 	default:
 		request = &Settlement{

@@ -18,6 +18,7 @@ type member struct {
 	Value struct {
 		Int    string `xml:"int,omitempty"`
 		String string `xml:"string,omitempty"`
+		I4     string `xml:"i4,omitempty"`
 	} `xml:"value"`
 }
 
@@ -35,7 +36,25 @@ func GenerateResponse(resultCode, resultMessage string) []byte {
 
 	response.Params.Member = append(response.Params.Member, member1, member2)
 
-	responseXML, err := xml.MarshalIndent(response, "", "  ")
+	responseXML, err := xml.Marshal(response)
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("\n******** Response ********\n%v\n", string(responseXML))
+	return responseXML
+}
+
+// GenerateResponseAdm generates XML response for AdministrativeMessage exclusively
+func GenerateResponseAdm(resultCode string) []byte {
+	response := methodResponse{}
+
+	member := member{}
+	member.Name = "resultCode"
+	member.Value.I4 = resultCode
+
+	response.Params.Member = append(response.Params.Member, member)
+
+	responseXML, err := xml.Marshal(response)
 	if err != nil {
 		fmt.Println(err)
 	}

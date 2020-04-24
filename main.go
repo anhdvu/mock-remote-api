@@ -21,7 +21,7 @@ func procReq(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("\n******** String to hash ********\n%q\n", parsedReq.String())
 
 		if payload.MethodName == "AdministrativeMessage" {
-			w.Write(wtools.GenerateResponse("0", "Messave has been received"))
+			w.Write(wtools.GenerateResponseAdm("1"))
 		} else {
 			w.Write(wtools.GenerateResponse("1", "Approved"))
 		}
