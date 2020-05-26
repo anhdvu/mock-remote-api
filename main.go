@@ -20,9 +20,10 @@ func procReq(w http.ResponseWriter, r *http.Request) {
 		wtools.KLVSplitter(parsedReq.KLV())
 		fmt.Printf("\n******** String to hash ********\n%q\n", parsedReq.String())
 
-		if payload.MethodName == "AdministrativeMessage" {
-			w.Write(wtools.GenerateResponseAdm("1"))
-		} else {
+		switch payload.MethodName {
+		case "AdministrativeMessage", "Stop":
+			w.Write(wtools.GenerateResponseCodeOnly("1"))
+		default:
 			w.Write(wtools.GenerateResponse("1", "Approved"))
 		}
 		fmt.Printf("\n######## INFO: Request parse completed ########\n\n\n\n")

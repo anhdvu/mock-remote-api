@@ -18,7 +18,6 @@ type member struct {
 	Value struct {
 		Int    string `xml:"int,omitempty"`
 		String string `xml:"string,omitempty"`
-		I4     string `xml:"i4,omitempty"`
 	} `xml:"value"`
 }
 
@@ -45,12 +44,12 @@ func GenerateResponse(resultCode, resultMessage string) []byte {
 }
 
 // GenerateResponseAdm generates XML response for AdministrativeMessage exclusively
-func GenerateResponseAdm(resultCode string) []byte {
+func GenerateResponseCodeOnly(resultCode string) []byte {
 	response := methodResponse{}
 
 	member := member{}
 	member.Name = "resultCode"
-	member.Value.I4 = resultCode
+	member.Value.Int = resultCode
 
 	response.Params.Member = append(response.Params.Member, member)
 

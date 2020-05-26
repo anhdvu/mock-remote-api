@@ -39,30 +39,6 @@ func (dd *DeductLoad) String() string {
 	return fmt.Sprint(dd.MethodName + dd.Terminal + dd.Reference + dd.Amount + dd.Narrative + dd.TxnType + dd.KLVData + dd.TxnID + dd.TxnDate)
 }
 
-// LoadAdvice struct used to hold data of LoadAdvice calls.
-type LoadAdvice struct {
-	MethodName string `json:"method name"`
-	Terminal   string `json:"terminal"`
-	Reference  string `json:"reference"`
-	Amount     string `json:"amount"`
-	Narrative  string `json:"narrative"`
-	TxnType    string `json:"transaction type"`
-	KLVData    string `json:"klv string"`
-	TxnID      string `json:"transaction id"`
-	TxnDate    string `json:"transaction date"`
-	Checksum   string `json:"checksum"`
-}
-
-// KLV gets KLV from LoadAdvice calls.
-func (la *LoadAdvice) KLV() string {
-	return la.KLVData
-}
-
-// String returns string to hash.
-func (la *LoadAdvice) String() string {
-	return fmt.Sprint(la.MethodName + la.Terminal + la.Reference + la.Amount + la.Narrative + la.TxnType + la.KLVData + la.TxnID + la.TxnDate)
-}
-
 // Settlement struct type used to hold data of adjustment or reversal calls.
 type Settlement struct {
 	MethodName string `json:"method name"`
@@ -86,6 +62,49 @@ func (st *Settlement) KLV() string {
 // String returns string to hash.
 func (st *Settlement) String() string {
 	return fmt.Sprint(st.MethodName + st.Terminal + st.Reference + st.Amount + st.Narrative + st.KLVData + st.RefTxnID + st.RefTxnDate + st.TxnID + st.TxnDate)
+}
+
+// Balance struct type used to hold data of balace calls.
+type Balance struct {
+	MethodName string `json:"method name"`
+	Terminal   string `json:"terminal"`
+	Reference  string `json:"reference"`
+	MsgType    string `json:"message type"`
+	KLVData    string `json:"klv string"`
+	TxnID      string `json:"transaction id"`
+	TxnDate    string `json:"transaction date"`
+	Checksum   string `json:"checksum"`
+}
+
+func (b *Balance) KLV() string {
+	return b.KLVData
+}
+
+// String returns message type
+func (b *Balance) String() string {
+	return fmt.Sprint(b.MethodName + b.Terminal + b.Reference + b.MsgType + b.KLVData + b.TxnID + b.TxnDate)
+}
+
+// Stop struct type used to hold data of stop calls
+type Stop struct {
+	MethodName string `json:"method name"`
+	Terminal   string `json:"terminal"`
+	Reference  string `json:"reference"`
+	CardNumber string `json:"card number"`
+	ReasonCode string `json:"reason code"`
+	KLVData    string `json:"klv string"`
+	TxnID      string `json:"transaction id"`
+	TxnDate    string `json:"transaction date"`
+	Checksum   string `json:"checksum"`
+}
+
+func (s *Stop) KLV() string {
+	return s.KLVData
+}
+
+// String returns message type
+func (s *Stop) String() string {
+	return fmt.Sprint(s.MethodName + s.Terminal + s.Reference + s.CardNumber + s.ReasonCode + s.KLVData + s.TxnID + s.TxnDate)
 }
 
 // AdminMessage struct type used to hold data of administrative message calls.
@@ -144,7 +163,7 @@ func ParseRemoteRequestBody(r *http.Request) *Payload {
 func ParseMethod(payload *Payload) ReqData {
 	var request ReqData // vô duyên vl
 	switch payload.MethodName {
-	case "Deduct", "LoadAdvice":
+	case "Deduct", "LoadAuth":
 		request = &DeductLoad{
 			MethodName: payload.MethodName,
 			Terminal:   payload.Params[0].Value.StringParam,
@@ -156,6 +175,29 @@ func ParseMethod(payload *Payload) ReqData {
 			TxnID:      payload.Params[6].Value.StringParam,
 			TxnDate:    payload.Params[7].Value.TimeParam,
 			Checksum:   payload.Params[8].Value.StringParam,
+		}
+	case "Balance":
+		request = &Balance{
+			MethodName: payload.MethodName,
+			Terminal:   payload.Params[0].Value.StringParam,
+			Reference:  payload.Params[1].Value.StringParam,
+			MsgType:    payload.Params[2].Value.StringParam,
+			KLVData:    payload.Params[3].Value.StringParam,
+			TxnID:      payload.Params[4].Value.StringParam,
+			TxnDate:    payload.Params[5].Value.TimeParam,
+			Checksum:   payload.Params[6].Value.StringParam,
+		}
+	case "Stop":
+		request = &Stop{
+			MethodName: payload.MethodName,
+			Terminal:   payload.Params[0].Value.StringParam,
+			Reference:  payload.Params[1].Value.StringParam,
+			CardNumber: payload.Params[2].Value.StringParam,
+			ReasonCode: payload.Params[3].Value.IntParam,
+			KLVData:    payload.Params[4].Value.StringParam,
+			TxnID:      payload.Params[5].Value.StringParam,
+			TxnDate:    payload.Params[6].Value.TimeParam,
+			Checksum:   payload.Params[7].Value.StringParam,
 		}
 	case "AdministrativeMessage":
 		request = &AdminMessage{
@@ -183,7 +225,6 @@ func ParseMethod(payload *Payload) ReqData {
 			Checksum:   payload.Params[9].Value.StringParam,
 		}
 	}
-
 	return request
 }
 
