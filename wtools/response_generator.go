@@ -39,7 +39,7 @@ func GenerateResponse(resultCode, resultMessage string) []byte {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("\n******** Response ********\n%v\n", string(responseXML))
+	fmt.Printf("%v\n", string(responseXML))
 	return responseXML
 }
 
@@ -57,6 +57,6 @@ func GenerateResponseCodeOnly(resultCode string) []byte {
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("\n******** Response ********\n%v\n", string(responseXML))
+	fmt.Printf("%v\n", string(responseXML))
 	return responseXML
 }

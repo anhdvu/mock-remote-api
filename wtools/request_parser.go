@@ -229,12 +229,12 @@ func ParseMethod(payload *Payload) ReqData {
 }
 
 // DumpJSON function dumps parsed request to os.Stdout in JSON format.
-func DumpJSON(reqBody ReqData) {
+func JSONize(reqBody ReqData) {
 	reqJSON, err := json.MarshalIndent(reqBody, "", "    ")
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("\n******** Request body in JSON ********\n%v\n", string(reqJSON))
+	fmt.Printf("%v\n", string(reqJSON))
 
 	/* // An attemp of using json encoder to print to os.Stdout
 	var buf bytes.Buffer
@@ -245,8 +245,7 @@ func DumpJSON(reqBody ReqData) {
 }
 
 // ParseRemoteRequestHeaders parses incoming requests' headers and print to stdout.
-func ParseRemoteRequestHeaders(r *http.Request) {
-	fmt.Println("\n******** Request headers ********")
+func ParseRemoteRequestHeader(r *http.Request) {
 	for k, v := range r.Header {
 		fmt.Printf("%q: %v\n", k, v)
 	}

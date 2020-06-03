@@ -12,23 +12,36 @@ func procReq(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "404 NOT FOUND\nPLEASE USE POST METHOD", http.StatusNotFound)
 	} else {
-		fmt.Printf("######## NOTICE: New request received ########\n")
-		w.Header().Set("Content-Type", "text/xml")  // Set response header
-		payload := wtools.ParseRemoteRequestBody(r) // Parse XML in request body to struct
-		parsedReq := wtools.ParseMethod(payload)    // From general struct to method-specific struct
-		wtools.DumpJSON(parsedReq)                  // Marshal method-specific struct to JSON and dump to os.Stdout
-		wtools.KLVSplitter(parsedReq.KLV())
-		fmt.Printf("\n******** String to hash ********\n%q\n", parsedReq.String())
+		log.Println("######## INFO: New request received ########")
 
+		// Parse request header
+		fmt.Println("\n******** Request header ********")
+		wtools.ParseRemoteRequestHeader(r)
+
+		// Parse request body
+		payload := wtools.ParseRemoteRequestBody(r) // Parse XML in request body to a payload struct
+		reqObj := wtools.ParseMethod(payload)       // From the general payload struct to a method-specific struct
+		fmt.Println("\n******** Request body in JSON ********")
+		wtools.JSONize(reqObj) // Marshal a method-specific struct to JSON and dump to os.Stdout
+		fmt.Println("\n******** KLV breakdown ********")
+		wtools.KLVSplitter(reqObj.KLV())
+		fmt.Println("\n******** String to hash ********")
+		fmt.Println(reqObj.String())
+
+		// Handling response to HTTP request
+		w.Header().Set("Content-Type", "text/xml") // Set response header
+		fmt.Println("\n******** Response ********")
 		switch payload.MethodName {
 		case "AdministrativeMessage", "Stop":
 			w.Write(wtools.GenerateResponseCodeOnly("1"))
 		default:
 			w.Write(wtools.GenerateResponse("1", "Approved"))
 		}
-		fmt.Printf("\n######## INFO: Request parse completed ########\n\n\n\n")
-	}
 
+		fmt.Println()
+		log.Println("######## INFO: Request parse completed ########")
+		fmt.Println()
+	}
 }
 
 func main() {
