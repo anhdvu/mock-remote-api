@@ -30,6 +30,9 @@ func KLVSplitter(s string) {
 		"258": "Markup Type                 ",
 		"900": "3D Secure OTP               ",
 		"901": "Digitization Activation     ",
+		"910": "Digitized Device ID         ",
+		"911": "Digitized PAN Expiry        ",
+		"912": "Digitized Masked FPAN       ",
 		"999": "Generic Key                 ",
 	}
 
