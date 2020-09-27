@@ -13,6 +13,7 @@ func procReq(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "404 NOT FOUND\nPLEASE USE POST METHOD", http.StatusNotFound)
 	} else {
 		log.Println("######## INFO: New request received ########")
+		fmt.Println("######## INFO: New request received ########")
 
 		// Parse request header
 		fmt.Println("\n******** Request header ********")
@@ -37,10 +38,7 @@ func procReq(w http.ResponseWriter, r *http.Request) {
 		default:
 			w.Write(wtools.GenerateResponse("1", "Approved"))
 		}
-
-		fmt.Println()
-		log.Println("######## INFO: Request parse completed ########")
-		fmt.Println()
+		fmt.Printf("\n######## INFO: Request parse completed ########\n\n")
 	}
 }
 

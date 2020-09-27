@@ -150,6 +150,9 @@ func ParseRemoteRequestBody(r *http.Request) *Payload {
 		fmt.Println(err)
 	}
 
+	fmt.Println("\n******** Raw Request body ********")
+	fmt.Printf("%s", rawBody)
+
 	xmlPayload := &Payload{}
 	err = xml.Unmarshal(rawBody, xmlPayload)
 	if err != nil {

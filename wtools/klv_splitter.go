@@ -15,6 +15,7 @@ func KLVSplitter(s string) {
 		"037": "Retrieval Reference Number  ",
 		"041": "Terminal ID                 ",
 		"042": "Merchant Identifier         ",
+		"048": "Fraud Scoring Data          ",
 		"049": "Original Currency Code      ",
 		"050": "From Account                ",
 		"052": "Pin Block                   ",
@@ -33,6 +34,7 @@ func KLVSplitter(s string) {
 		"910": "Digitized Device ID         ",
 		"911": "Digitized PAN Expiry        ",
 		"912": "Digitized Masked FPAN       ",
+		"913": "Digitized token reference   ",
 		"999": "Generic Key                 ",
 	}
 
