@@ -11,6 +11,7 @@ func KLVSplitter(s string) {
 	klvMap := map[string]string{
 		"002": "Tracking Number             ",
 		"004": "Original Transaction Amount ",
+		"010": "Conversion Rate             ",
 		"026": "Merchant Category Code      ",
 		"037": "Retrieval Reference Number  ",
 		"041": "Terminal ID                 ",
@@ -29,6 +30,7 @@ func KLVSplitter(s string) {
 		"256": "Adjustment Reason           ",
 		"257": "Reference ID                ",
 		"258": "Markup Type                 ",
+		"259": "Acquirer Country            ",
 		"900": "3D Secure OTP               ",
 		"901": "Digitization Activation     ",
 		"910": "Digitized Device ID         ",
