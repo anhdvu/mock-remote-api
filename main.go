@@ -58,6 +58,6 @@ func main() {
 	mux.HandleFunc("/logs/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, logFile)
 	})
-	log.Println("Wallet (Companion Remote API) v0.1 is listening on port 8888")
+	log.Println("Wallet (Companion Remote API) v0.1.20200928 is listening on port 8888")
 	log.Fatal(http.ListenAndServe(":8888", mux))
 }
