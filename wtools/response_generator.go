@@ -22,7 +22,7 @@ type member struct {
 }
 
 // GenerateResponse generates XML response.
-func GenerateResponse(resultCode, resultMessage string) []byte {
+func GenerateResponsewText(resultCode, resultMessage string) []byte {
 	response := methodResponse{}
 
 	member1 := member{}
@@ -43,7 +43,7 @@ func GenerateResponse(resultCode, resultMessage string) []byte {
 	return responseXML
 }
 
-// GenerateResponseAdm generates XML response for AdministrativeMessage exclusively
+// GenerateResponseCodeOnly generates XML response for AdministrativeMessage exclusively
 func GenerateResponseCodeOnly(resultCode string) []byte {
 	response := methodResponse{}
 
@@ -59,4 +59,18 @@ func GenerateResponseCodeOnly(resultCode string) []byte {
 	}
 	fmt.Printf("%v\n", string(responseXML))
 	return responseXML
+}
+
+// GenerateResponsewActivationMethods generates XML response for AdministrativeMessage digitization.activationmethods message type
+func GenerateResponsewActivationMethods() []byte {
+	response := []byte("<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member><member><name>activationMethods</name><value><array><data><value><struct><member><name>type</name><value>1</value></member><member><name>value</name><value>1(###) ### 4567</value></member></struct></value><value><struct><member><name>type</name><value>22</value></member><member><name>value</name><value>2a***d@anymail.com</value></member></struct></value></data></array></value></member></struct></value></param></params></methodResponse>")
+
+	// responseXML, err := xml.Marshal(response)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
+	// fmt.Printf("%v\n", string(responseXML))
+	// return responseXML
+	fmt.Printf("%v\n", string(response))
+	return response
 }

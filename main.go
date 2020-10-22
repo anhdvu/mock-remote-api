@@ -33,10 +33,16 @@ func procReq(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/xml") // Set response header
 		fmt.Println("\n******** Response ********")
 		switch payload.MethodName {
-		case "AdministrativeMessage", "Stop":
+		case "AdministrativeMessage":
+			if payload.Params[2].Value.StringParam == "digitization.activationmethods" {
+				w.Write(wtools.GenerateResponsewActivationMethods())
+			} else {
+				w.Write(wtools.GenerateResponseCodeOnly("1"))
+			}
+		case "Stop":
 			w.Write(wtools.GenerateResponseCodeOnly("1"))
 		default:
-			w.Write(wtools.GenerateResponse("1", "Approved"))
+			w.Write(wtools.GenerateResponsewText("1", "Approved"))
 		}
 		fmt.Printf("\n######## INFO: Request parse completed ########\n\n")
 	}
