@@ -4,6 +4,7 @@ package wtools
 import (
 	"encoding/xml"
 	"fmt"
+	"os"
 )
 
 type methodResponse struct {
@@ -21,9 +22,20 @@ type member struct {
 	} `xml:"value"`
 }
 
+// Move response code to env var so the setting can be dynamically changed
+func GetRespCode() string {
+	respCode := os.Getenv("RESP_CODE")
+	if respCode == "" {
+		respCode = "1"
+	}
+	return respCode
+}
+
 // GenerateResponse generates XML response.
-func GenerateResponsewText(resultCode, resultMessage string) []byte {
+func GenerateResponsewText(resultMessage string) []byte {
 	response := methodResponse{}
+
+	resultCode := GetRespCode()
 
 	member1 := member{}
 	member1.Name = "resultCode"
@@ -44,8 +56,10 @@ func GenerateResponsewText(resultCode, resultMessage string) []byte {
 }
 
 // GenerateResponseCodeOnly generates XML response for AdministrativeMessage exclusively
-func GenerateResponseCodeOnly(resultCode string) []byte {
+func GenerateResponseCodeOnly() []byte {
 	response := methodResponse{}
+
+	resultCode := GetRespCode()
 
 	member := member{}
 	member.Name = "resultCode"
@@ -63,7 +77,7 @@ func GenerateResponseCodeOnly(resultCode string) []byte {
 
 // GenerateResponsewActivationMethods generates XML response for AdministrativeMessage digitization.activationmethods message type
 func GenerateResponsewActivationMethods() []byte {
-	response := []byte("<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member><member><name>activationMethods</name><value><array><data><value><struct><member><name>type</name><value>1</value></member><member><name>value</name><value>1(###) ### 4567</value></member></struct></value><value><struct><member><name>type</name><value>22</value></member><member><name>value</name><value>2a***d@anymail.com</value></member></struct></value></data></array></value></member></struct></value></param></params></methodResponse>")
+	response := []byte("<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member><member><name>activationMethods</name><value><array><data><value><struct><member><name>type</name><value>1</value></member><member><name>value</name><value>1(###) ### 4567</value></member></struct></value><value><struct><member><name>type</name><value>2</value></member><member><name>value</name><value>2a***d@anymail.com</value></member></struct></value></data></array></value></member></struct></value></param></params></methodResponse>")
 
 	// responseXML, err := xml.Marshal(response)
 	// if err != nil {

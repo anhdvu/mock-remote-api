@@ -37,12 +37,12 @@ func procReq(w http.ResponseWriter, r *http.Request) {
 			if payload.Params[2].Value.StringParam == "digitization.activationmethods" {
 				w.Write(wtools.GenerateResponsewActivationMethods())
 			} else {
-				w.Write(wtools.GenerateResponseCodeOnly("1"))
+				w.Write(wtools.GenerateResponseCodeOnly())
 			}
 		case "Stop":
-			w.Write(wtools.GenerateResponseCodeOnly("1"))
+			w.Write(wtools.GenerateResponseCodeOnly())
 		default:
-			w.Write(wtools.GenerateResponsewText("1", "Approved"))
+			w.Write(wtools.GenerateResponsewText("Approved"))
 		}
 		fmt.Printf("\n######## INFO: Request parse completed ########\n\n")
 	}
@@ -64,6 +64,6 @@ func main() {
 	mux.HandleFunc("/logs/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, logFile)
 	})
-	log.Println("Wallet (Companion Remote API) v0.1.20200928 is listening on port 8888")
+	log.Println("Wallet (Companion Remote API) v0.1.20201027 is listening on port 8888")
 	log.Fatal(http.ListenAndServe(":8888", mux))
 }
