@@ -60,6 +60,9 @@ func main() {
 	fs := http.FileServer(http.Dir("log"))
 	mux.Handle("/log/", http.StripPrefix("/log/", fs))
 
+	adm := http.FileServer(http.Dir("adm"))
+	mux.Handle("/adm/", http.StripPrefix("/adm/", adm))
+
 	logFile := "log/logs.txt"
 	mux.HandleFunc("/logs/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, logFile)
