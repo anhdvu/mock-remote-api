@@ -12,7 +12,6 @@ func procReq(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		http.Error(w, "404 NOT FOUND\nPLEASE USE POST METHOD", http.StatusNotFound)
 	} else {
-		log.Println("######## INFO: New request received ########")
 		fmt.Println("######## INFO: New request received ########")
 
 		// Parse request header
@@ -23,7 +22,7 @@ func procReq(w http.ResponseWriter, r *http.Request) {
 		payload := wtools.ParseRemoteRequestBody(r) // Parse XML in request body to a payload struct
 		reqObj := wtools.ParseMethod(payload)       // From the general payload struct to a method-specific struct
 		fmt.Println("\n******** Request body in JSON ********")
-		wtools.JSONize(reqObj) // Marshal a method-specific struct to JSON and dump to os.Stdout
+		wtools.ToJSON(reqObj) // Marshal a method-specific struct to JSON and dump to os.Stdout
 		fmt.Println("\n******** KLV breakdown ********")
 		wtools.KLVSplitter(reqObj.KLV())
 		fmt.Println("\n******** String to hash ********")
@@ -42,7 +41,7 @@ func procReq(w http.ResponseWriter, r *http.Request) {
 		case "Stop":
 			w.Write(wtools.GenerateResponseCodeOnly())
 		default:
-			w.Write(wtools.GenerateResponsewText("Approved"))
+			w.Write(wtools.GenerateResponseCodeOnly())
 		}
 		fmt.Printf("\n######## INFO: Request parse completed ########\n\n")
 	}
@@ -67,6 +66,6 @@ func main() {
 	mux.HandleFunc("/logs/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, logFile)
 	})
-	log.Println("Wallet (Companion Remote API) v0.1.20201027 is listening on port 8888")
+	log.Println("Wallet (Companion + MPQR) v0.1.20210323-MPQR is listening on port 8888")
 	log.Fatal(http.ListenAndServe(":8888", mux))
 }

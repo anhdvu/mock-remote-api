@@ -16,7 +16,7 @@ type ReqData interface {
 }
 
 // Deduct struct type used to hold data of Deduct calls.
-type DeductLoad struct {
+type DeductLoadAuth struct {
 	MethodName string `json:"method name"`
 	Terminal   string `json:"terminal"`
 	Reference  string `json:"reference"`
@@ -30,12 +30,12 @@ type DeductLoad struct {
 }
 
 // KLV gets KLV from Deduct calls.
-func (dd *DeductLoad) KLV() string {
+func (dd *DeductLoadAuth) KLV() string {
 	return dd.KLVData
 }
 
 // String returns string to hash.
-func (dd *DeductLoad) String() string {
+func (dd *DeductLoadAuth) String() string {
 	return fmt.Sprint(dd.MethodName + dd.Terminal + dd.Reference + dd.Amount + dd.Narrative + dd.TxnType + dd.KLVData + dd.TxnID + dd.TxnDate)
 }
 
@@ -129,6 +129,28 @@ func (adm *AdminMessage) String() string {
 	return fmt.Sprint(adm.MethodName + adm.Terminal + adm.Reference + adm.MsgType + adm.KLVData + adm.TxnID + adm.TxnDate)
 }
 
+type Load struct {
+	MethodName string `json:"method name"`
+	Terminal   string `json:"terminal"`
+	Reference  string `json:"reference"`
+	Amount     string `json:"amount"`
+	Narrative  string `json:"narrative"`
+	TxnType    string `json:"transaction type"`
+	TxnID      string `json:"transaction id"`
+	TxnDate    string `json:"transaction date"`
+	Checksum   string `json:"checksum"`
+}
+
+// KLV gets KLV from Deduct calls.
+func (l *Load) KLV() string {
+	return "no KLV"
+}
+
+// String returns string to hash.
+func (l *Load) String() string {
+	return fmt.Sprint(l.MethodName + l.Terminal + l.Reference + l.Amount + l.Narrative + l.TxnType + l.TxnID + l.TxnDate)
+}
+
 // Payload struct type used to parse all XML to struct based data type with which Go can work.
 type Payload struct {
 	XMLName    xml.Name `xml:"methodCall"`
@@ -167,7 +189,7 @@ func ParseMethod(payload *Payload) ReqData {
 	var request ReqData // vô duyên vl
 	switch payload.MethodName {
 	case "Deduct", "LoadAuth":
-		request = &DeductLoad{
+		request = &DeductLoadAuth{
 			MethodName: payload.MethodName,
 			Terminal:   payload.Params[0].Value.StringParam,
 			Reference:  payload.Params[1].Value.StringParam,
@@ -213,6 +235,18 @@ func ParseMethod(payload *Payload) ReqData {
 			TxnDate:    payload.Params[5].Value.TimeParam,
 			Checksum:   payload.Params[6].Value.StringParam,
 		}
+	case "Load":
+		request = &Load{
+			MethodName: payload.MethodName,
+			Terminal:   payload.Params[0].Value.StringParam,
+			Reference:  payload.Params[1].Value.StringParam,
+			Amount:     payload.Params[2].Value.IntParam,
+			Narrative:  payload.Params[3].Value.StringParam,
+			TxnType:    payload.Params[4].Value.StringParam,
+			TxnID:      payload.Params[5].Value.StringParam,
+			TxnDate:    payload.Params[6].Value.TimeParam,
+			Checksum:   payload.Params[7].Value.StringParam,
+		}
 	default:
 		request = &Settlement{
 			MethodName: payload.MethodName,
@@ -232,7 +266,7 @@ func ParseMethod(payload *Payload) ReqData {
 }
 
 // DumpJSON function dumps parsed request to os.Stdout in JSON format.
-func JSONize(reqBody ReqData) {
+func ToJSON(reqBody ReqData) {
 	reqJSON, err := json.MarshalIndent(reqBody, "", "    ")
 	if err != nil {
 		fmt.Println(err)

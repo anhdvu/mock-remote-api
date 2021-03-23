@@ -16,6 +16,7 @@ func KLVSplitter(s string) {
 		"037": "Retrieval Reference Number  ",
 		"041": "Terminal ID                 ",
 		"042": "Merchant Identifier         ",
+		"043": "Merchant Description        ",
 		"048": "Fraud Scoring Data          ",
 		"049": "Original Currency Code      ",
 		"050": "From Account                ",
@@ -28,15 +29,19 @@ func KLVSplitter(s string) {
 		"254": "Digitized Pan               ",
 		"255": "Digitized Wallet ID         ",
 		"256": "Adjustment Reason           ",
-		"257": "Reference ID                ",
+		"257": "Original Deduct Reference ID",
 		"258": "Markup Type                 ",
 		"259": "Acquirer Country            ",
+		"260": "Mobile Number               ",
+		"261": "Transaction Fee Amount      ",
+		"262": "Transaction Subtype         ",
 		"900": "3D Secure OTP               ",
 		"901": "Digitization Activation     ",
 		"910": "Digitized Device ID         ",
 		"911": "Digitized PAN Expiry        ",
 		"912": "Digitized Masked FPAN       ",
-		"913": "Digitized token reference   ",
+		"913": "Digitized Token Reference   ",
+		"914": "Digitized Event Reason      ",
 		"999": "Generic Key                 ",
 	}
 
@@ -44,6 +49,7 @@ func KLVSplitter(s string) {
 
 	if len(s) < 5 {
 		fmt.Println("NOT a proper KLV - Error: < 5.")
+		return
 	}
 
 	for len(s) > 4 {
@@ -63,7 +69,7 @@ func KLVSplitter(s string) {
 	}
 
 	for _, klvElem := range klvSlices {
-		if value, present := klvMap[klvElem[0]]; present {
+		if value, ok := klvMap[klvElem[0]]; ok {
 			fmt.Printf("%s --- %s --- %s --- %s\n", value, klvElem[0], klvElem[1], klvElem[2])
 		} else {
 			fmt.Printf("Unknown --- %s --- %s --- %s\n", klvElem[0], klvElem[1], klvElem[2])
