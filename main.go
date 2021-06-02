@@ -55,6 +55,7 @@ func main() {
 	})
 
 	mux.HandleFunc("/code1", procReq)
+	mux.Handle("/remote", wtools.LogRemoteMessage(wtools.HandleRemoteMessage()))
 
 	fs := http.FileServer(http.Dir("log"))
 	mux.Handle("/log/", http.StripPrefix("/log/", fs))
@@ -66,6 +67,6 @@ func main() {
 	mux.HandleFunc("/logs/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, logFile)
 	})
-	log.Println("Wallet (Companion + MPQR) v0.1.20210323-MPQR is listening on port 8888")
+	log.Println("Wallet (Companion + MPQR) v0.1.20210507-MPQR is listening on port 8888")
 	log.Fatal(http.ListenAndServe(":8888", mux))
 }
