@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 )
 
@@ -166,7 +166,7 @@ type Payload struct {
 
 // ParseRemoteRequestBody parses incoming requests to JSON and print to stdout.
 func ParseRemoteRequestBody(r *http.Request) *Payload {
-	rawBody, err := ioutil.ReadAll(r.Body)
+	rawBody, err := io.ReadAll(r.Body)
 	defer r.Body.Close()
 	if err != nil {
 		fmt.Println(err)
