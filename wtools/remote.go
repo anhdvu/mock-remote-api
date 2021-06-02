@@ -21,7 +21,7 @@ func HandleRemoteMessage() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			w.WriteHeader(http.StatusBadRequest)
-			w.Write("Please use POST method")
+			w.Write([]byte("Please use POST method"))
 		} else {
 			ParseRemoteRequestHeader(r)
 
