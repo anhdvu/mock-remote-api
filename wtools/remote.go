@@ -39,6 +39,7 @@ func HandleRemoteMessage() http.HandlerFunc {
 		pl.ResultCode = "1000"
 		fmt.Println("\n******** Response body ********")
 		pl.JSON(os.Stdout)
+		w.WriteHeader(http.StatusOK)
 		pl.JSON(w)
 	}
 }
@@ -48,12 +49,12 @@ func (m *RemoteMessage) JSON(w io.Writer) error {
 	return e.Encode(m)
 }
 
-func LogRemoteMessage(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+func LogRemoteMessage(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		fmt.Println("######## INFO: New request received ########")
 		fmt.Println("\n******** Request header ********")
 		next(w, r)
 		fmt.Printf("\n######## INFO: Request parse completed ########\n\n")
-	})
+	}
 }
