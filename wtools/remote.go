@@ -19,28 +19,33 @@ type RemoteMessage struct {
 
 func HandleRemoteMessage() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		ParseRemoteRequestHeader(r)
-
-		raw, err := io.ReadAll(r.Body)
-		defer r.Body.Close()
-		if err != nil {
+		if r.Method != http.MethodPost {
 			w.WriteHeader(http.StatusBadRequest)
-		}
+			w.Write("Please use POST method")
+		} else {
+			ParseRemoteRequestHeader(r)
 
-		pl := &RemoteMessage{}
-		err = json.Unmarshal(raw, pl)
-		if err != nil {
-			fmt.Printf("Couldn't unmarshal json payload, %v\n", err)
-			w.WriteHeader(http.StatusBadRequest)
-		}
-		fmt.Println("\n******** Request body ********")
-		pl.JSON(os.Stdout)
+			raw, err := io.ReadAll(r.Body)
+			defer r.Body.Close()
+			if err != nil {
+				w.WriteHeader(http.StatusBadRequest)
+			}
 
-		pl.ResultCode = "1000"
-		fmt.Println("\n******** Response body ********")
-		pl.JSON(os.Stdout)
-		w.WriteHeader(http.StatusOK)
-		pl.JSON(w)
+			pl := &RemoteMessage{}
+			err = json.Unmarshal(raw, pl)
+			if err != nil {
+				fmt.Printf("Couldn't unmarshal json payload, %v\n", err)
+				w.WriteHeader(http.StatusBadRequest)
+			}
+			fmt.Println("\n******** Request body ********")
+			pl.JSON(os.Stdout)
+
+			pl.ResultCode = "1000"
+			fmt.Println("\n******** Response body ********")
+			pl.JSON(os.Stdout)
+			w.WriteHeader(http.StatusOK)
+			pl.JSON(w)
+		}
 	}
 }
 
