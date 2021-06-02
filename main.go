@@ -55,7 +55,7 @@ func main() {
 	})
 
 	mux.HandleFunc("/code1", procReq)
-	mux.Handlefunc("/remote", wtools.LogRemoteMessage(wtools.HandleRemoteMessage()))
+	mux.HandleFunc("/remote", wtools.LogRemoteMessage(wtools.HandleRemoteMessage()))
 
 	fs := http.FileServer(http.Dir("log"))
 	mux.Handle("/log/", http.StripPrefix("/log/", fs))
