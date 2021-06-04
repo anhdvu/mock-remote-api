@@ -40,7 +40,7 @@ func HandleRemoteMessage() http.HandlerFunc {
 			fmt.Println("\n******** Request body ********")
 			pl.JSON(os.Stdout)
 
-			pl.ResultCode = "1000"
+			pl.ResultCode = "0000"
 			fmt.Println("\n******** Response body ********")
 			pl.JSON(os.Stdout)
 			w.WriteHeader(http.StatusOK)
