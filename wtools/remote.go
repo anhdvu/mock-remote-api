@@ -40,7 +40,13 @@ func HandleRemoteMessage() http.HandlerFunc {
 			fmt.Println("\n******** Request body ********")
 			pl.JSON(os.Stdout)
 
+			// Available result code
+			// 0000		Message processed and confirmed.
+			// 1000		API internal error.
+			// 1101		Balance limit exceeded.
+			// 1102		Moving annual top up limit exceeded.
 			pl.ResultCode = "0000"
+
 			fmt.Println("\n******** Response body ********")
 			pl.JSON(os.Stdout)
 			w.WriteHeader(http.StatusOK)
