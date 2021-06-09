@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/anhdvu/mock_remote_api/wtools"
+	"github.com/anhdvu/mock-remote-api/wtools"
 )
 
 func procReq(w http.ResponseWriter, r *http.Request) {
@@ -67,6 +67,6 @@ func main() {
 	mux.HandleFunc("/logs/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, logFile)
 	})
-	log.Println("Wallet (Companion + MPQR) v0.2.20210603-MPQR is listening on port 8888")
+	log.Println("Wallet (Companion + MPQR) v0.2.20210610-MPQR is listening on port 8888")
 	log.Fatal(http.ListenAndServe(":8888", mux))
 }
