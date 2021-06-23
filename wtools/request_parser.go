@@ -267,7 +267,7 @@ func ParseMethod(payload *Payload) ReqData {
 
 // DumpJSON function dumps parsed request to os.Stdout in JSON format.
 func ToJSON(reqBody ReqData) {
-	reqJSON, err := json.MarshalIndent(reqBody, "", "    ")
+	reqJSON, err := json.MarshalIndent(reqBody, "", "  ")
 	if err != nil {
 		fmt.Println(err)
 	}

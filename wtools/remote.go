@@ -9,12 +9,25 @@ import (
 )
 
 type RemoteMessage struct {
-	MessageType       string `json:"messageType"`
-	TrackingNumber    string `json:"trackingNumber"`
-	CustomerReference string `json:"customerReference"`
-	WalletIdentifier  string `json:"walletIdentifier"`
-	Challenge         string `json:"challenge"`
-	ResultCode        string `json:"resultCode,omitempty"`
+	MessageType               string             `json:"messageType"`
+	TrackingNumber            string             `json:"trackingNumber"`
+	CustomerReference         string             `json:"customerReference"`
+	EventType                 string             `json:"eventType,omitempty"`
+	DigitizedDeviceIdentifier string             `json:"digitizedDeviceIdentifier,omitempty"`
+	DigitizedPan              string             `json:"digitizedPan,omitempty"`
+	DigitizedPanExpiry        string             `json:"digitizedPanExpiry,omitempty"`
+	DigitizedFpanMasked       string             `json:"digitizedFpanMasked,omitempty"`
+	DigitizedTokenReference   string             `json:"digitizedTokenReference,omitempty"`
+	WalletIdentifier          string             `json:"walletIdentifier,omitempty"`
+	Challenge                 string             `json:"challenge,omitempty"`
+	TokenRequestorId          string             `json:"tokenRequestorId,omitempty"`
+	ActivationMethods         []ActivationMethod `json:"activationMethods,omitempty"`
+	ResultCode                string             `json:"resultCode,omitempty"`
+}
+
+type ActivationMethod struct {
+	Type  int    `json:"type"`
+	Value string `json:"value"`
 }
 
 func HandleRemoteMessage() http.HandlerFunc {
@@ -24,15 +37,9 @@ func HandleRemoteMessage() http.HandlerFunc {
 			w.Write([]byte("Please use POST method"))
 		} else {
 			ParseRemoteRequestHeader(r)
-
-			raw, err := io.ReadAll(r.Body)
 			defer r.Body.Close()
-			if err != nil {
-				w.WriteHeader(http.StatusBadRequest)
-			}
-
 			pl := &RemoteMessage{}
-			err = json.Unmarshal(raw, pl)
+			err := pl.ParseJSON(r.Body)
 			if err != nil {
 				fmt.Printf("Couldn't unmarshal json payload, %v\n", err)
 				w.WriteHeader(http.StatusBadRequest)
@@ -40,9 +47,17 @@ func HandleRemoteMessage() http.HandlerFunc {
 			fmt.Println("\n******** Request body ********")
 			pl.JSON(os.Stdout)
 
+			if pl.MessageType == "digitization.activationmethods" {
+				am1 := ActivationMethod{1, "1(###) ### 4567"}
+				am2 := ActivationMethod{2, "2a***d@anymail.com"}
+
+				pl.ActivationMethods = append(pl.ActivationMethods, am1, am2)
+			}
+
 			// Available result code
 			// 0000		Message processed and confirmed.
 			// 1000		API internal error.
+			// 1022		Authorization error.
 			// 1101		Balance limit exceeded.
 			// 1102		Moving annual top up limit exceeded.
 			pl.ResultCode = "0000"
@@ -58,6 +73,11 @@ func HandleRemoteMessage() http.HandlerFunc {
 func (m *RemoteMessage) JSON(w io.Writer) error {
 	e := json.NewEncoder(w)
 	return e.Encode(m)
+}
+
+func (m *RemoteMessage) ParseJSON(r io.Reader) error {
+	d := json.NewDecoder(r)
+	return d.Decode(m)
 }
 
 func LogRemoteMessage(next http.HandlerFunc) http.HandlerFunc {
