@@ -70,6 +70,6 @@ func main() {
 		http.ServeFile(w, r, logFile)
 	})
 	fmt.Println("Wallet v0.2.20210624 is running...")
-	log.Println("Wallet (Companion + MPQR) v0.2.20210624-MPQR is listening on port 8888")
+	log.Println("Wallet (Companion + MPQR) v0.2.20210813-MPQR is listening on port 8888")
 	log.Fatal(http.ListenAndServe(":8888", mux))
 }
