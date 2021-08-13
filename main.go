@@ -10,7 +10,9 @@ import (
 
 func procReq(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
-		http.Error(w, "404 NOT FOUND\nPLEASE USE POST METHOD", http.StatusNotFound)
+		w.Header().Set("Allow", http.MethodPost)
+		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		return
 	} else {
 		fmt.Println("######## INFO: New request received ########")
 
@@ -54,19 +56,20 @@ func main() {
 		fmt.Fprintf(w, "Hey there!\nWelcome %s", r.URL.Path[1:])
 	})
 
-	mux.HandleFunc("/code1", procReq)
+	mux.HandleFunc("/wallet", procReq)
 	mux.HandleFunc("/remote", wtools.LogRemoteMessage(wtools.HandleRemoteMessage()))
 
-	fs := http.FileServer(http.Dir("log"))
+	fs := http.FileServer(http.Dir("./log/"))
 	mux.Handle("/log/", http.StripPrefix("/log/", fs))
 
 	adm := http.FileServer(http.Dir("adm"))
 	mux.Handle("/adm/", http.StripPrefix("/adm/", adm))
 
-	logFile := "log/logs.txt"
-	mux.HandleFunc("/logs/", func(w http.ResponseWriter, r *http.Request) {
+	logFile := "./log/logs.txt"
+	mux.HandleFunc("/logs", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, logFile)
 	})
-	log.Println("Wallet (Companion + MPQR) v0.2.20210610-MPQR is listening on port 8888")
+	fmt.Println("Wallet v0.2.20210624 is running...")
+	log.Println("Wallet (Companion + MPQR) v0.2.20210624-MPQR is listening on port 8888")
 	log.Fatal(http.ListenAndServe(":8888", mux))
 }
