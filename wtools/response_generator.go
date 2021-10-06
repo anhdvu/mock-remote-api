@@ -5,7 +5,18 @@ import (
 	"encoding/xml"
 	"fmt"
 	"os"
+	"sync"
 )
+
+type response struct {
+	code int
+	text string
+}
+
+type MethodResponseMap struct {
+	mu        sync.RWMutex
+	responses map[string]*response
+}
 
 type methodResponse struct {
 	XMLName xml.Name `xml:"methodResponse"`
@@ -22,7 +33,7 @@ type member struct {
 	} `xml:"value"`
 }
 
-// Move response code to env var so the setting can be dynamically changed
+// GetRespCode move response code to env var so the setting can be dynamically changed
 func GetRespCode() string {
 	respCode := os.Getenv("RESP_CODE")
 	if respCode == "" {

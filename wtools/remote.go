@@ -1,11 +1,16 @@
 package wtools
 
 import (
+	"bytes"
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"os"
+	"strings"
 )
 
 type RemoteMessage struct {
@@ -20,7 +25,7 @@ type RemoteMessage struct {
 	DigitizedTokenReference   string             `json:"digitizedTokenReference,omitempty"`
 	WalletIdentifier          string             `json:"walletIdentifier,omitempty"`
 	Challenge                 string             `json:"challenge,omitempty"`
-	TokenRequestorId          string             `json:"tokenRequestorId,omitempty"`
+	TokenRequestorID          string             `json:"tokenRequestorId,omitempty"`
 	ActivationMethods         []ActivationMethod `json:"activationMethods,omitempty"`
 	ResultCode                string             `json:"resultCode,omitempty"`
 }
@@ -30,43 +35,65 @@ type ActivationMethod struct {
 	Value string `json:"value"`
 }
 
-func HandleRemoteMessage() http.HandlerFunc {
+func HandleRemoteMessage(terminal, password string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Please use POST method"))
-		} else {
-			ParseRemoteRequestHeader(r)
-			defer r.Body.Close()
-			pl := &RemoteMessage{}
-			err := pl.ParseJSON(r.Body)
-			if err != nil {
-				fmt.Printf("Couldn't unmarshal json payload, %v\n", err)
-				w.WriteHeader(http.StatusBadRequest)
-			}
-			fmt.Println("\n******** Request body ********")
-			pl.JSON(os.Stdout)
-
-			if pl.MessageType == "digitization.activationmethods" {
-				am1 := ActivationMethod{1, "1(###) ### 4567"}
-				am2 := ActivationMethod{2, "2a***d@anymail.com"}
-
-				pl.ActivationMethods = append(pl.ActivationMethods, am1, am2)
-			}
-
-			// Available result code
-			// 0000		Message processed and confirmed.
-			// 1000		API internal error.
-			// 1022		Authorization error.
-			// 1101		Balance limit exceeded.
-			// 1102		Moving annual top up limit exceeded.
-			pl.ResultCode = "0000"
-
-			fmt.Println("\n******** Response body ********")
-			pl.JSON(os.Stdout)
-			w.WriteHeader(http.StatusOK)
-			pl.JSON(w)
+			return
 		}
+		ParseRemoteRequestHeader(r)
+		receivedTerminal, receivedChecksum := extractAuthorizationData(r)
+
+		defer r.Body.Close()
+		rawPl, err := io.ReadAll(r.Body)
+		if err != nil {
+			fmt.Println("error: Couldn't read raw payload.")
+		}
+		pl := &RemoteMessage{}
+		err = json.Unmarshal(rawPl, pl)
+		if err != nil {
+			fmt.Printf("Couldn't unmarshal json payload, %v\n", err)
+			w.WriteHeader(http.StatusBadRequest)
+		}
+		fmt.Println("\n******** Request body ********")
+		pl.JSON(os.Stdout)
+		fmt.Println("\n******** Raw payload to hash ********")
+		rawPayload := fmt.Sprintf("%q", rawPl)
+		fmt.Println(strings.Trim(rawPayload, "\""))
+
+		checksum := strings.ToUpper(calculateChecksum(password, rawPl))
+
+		fmt.Println("\n******** Authorization data ********")
+		fmt.Printf("Received terminal: %s\n", receivedTerminal)
+		fmt.Printf("Configured terminal: %s\n", terminal)
+		fmt.Printf("Received checksum: %s\n", receivedChecksum)
+		fmt.Printf("Calculated checksum: %s\n", checksum)
+
+		if pl.MessageType == "digitization.activationmethods" {
+			am1 := ActivationMethod{1, "1(###) ### 4567"}
+			am2 := ActivationMethod{2, "2a***d@anymail.com"}
+
+			pl.ActivationMethods = append(pl.ActivationMethods, am1, am2)
+		}
+
+		// Available result code
+		// 0000		Message processed and confirmed.
+		// 1000		API internal error.
+		// 1022		Authorization error.
+		// 1101		Balance limit exceeded.
+		// 1102		Moving annual top up limit exceeded.
+
+		if receivedTerminal == terminal && receivedChecksum == checksum {
+			pl.ResultCode = "0000"
+		} else {
+			pl.ResultCode = "1022"
+		}
+
+		fmt.Println("\n******** Response body ********")
+		pl.JSON(os.Stdout)
+		w.WriteHeader(http.StatusOK)
+		pl.JSON(w)
 	}
 }
 
@@ -88,4 +115,20 @@ func LogRemoteMessage(next http.HandlerFunc) http.HandlerFunc {
 		next(w, r)
 		fmt.Printf("\n######## INFO: Request parse completed ########\n\n")
 	}
+}
+
+func calculateChecksum(pk string, payload []byte) string {
+	trimmed := bytes.TrimSpace(payload)
+	digester := hmac.New(sha256.New, []byte(pk))
+	digester.Write(trimmed)
+	return hex.EncodeToString(digester.Sum(nil))
+}
+
+func extractAuthorizationData(r *http.Request) (string, string) {
+	authHeader := r.Header.Get("Authorization")
+	headerValues := strings.Split(authHeader, ",")
+	terminal := strings.Split(headerValues[0], "=")[1]
+	checksum := strings.Split(headerValues[1], "=")[1]
+
+	return terminal, checksum
 }
