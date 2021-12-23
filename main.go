@@ -36,7 +36,7 @@ func procReq(w http.ResponseWriter, r *http.Request) {
 	switch payload.MethodName {
 	case "AdministrativeMessage":
 		if payload.Params[2].Value.StringParam == "digitization.activationmethods" {
-			w.Write(wtools.GenerateResponsewActivationMethods())
+			w.Write(wtools.GenerateResponsewActivationMethods(payload.Params[1].Value.StringParam))
 		} else {
 			w.Write(wtools.GenerateResponseCodeOnly())
 		}
@@ -71,6 +71,6 @@ func main() {
 		http.ServeFile(w, r, logFile)
 	})
 	fmt.Println("Wallet v0.2.20210624 is running...")
-	log.Println("Wallet (Companion + MPQR) v0.3.211006-MPQR is listening on port 8888")
+	log.Println("Wallet (Companion + MPQR) v0.4.211223-MPQR is listening on port 8888")
 	log.Fatal(http.ListenAndServe(":8888", mux))
 }

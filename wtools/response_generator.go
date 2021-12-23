@@ -13,6 +13,7 @@ type response struct {
 	text string
 }
 
+// MethodResponseMap is an in-memory db of responses
 type MethodResponseMap struct {
 	mu        sync.RWMutex
 	responses map[string]*response
@@ -42,7 +43,7 @@ func GetRespCode() string {
 	return respCode
 }
 
-// GenerateResponse generates XML response.
+// GenerateResponsewText generates XML response.
 func GenerateResponsewText(resultMessage string) []byte {
 	response := methodResponse{}
 
@@ -87,8 +88,21 @@ func GenerateResponseCodeOnly() []byte {
 }
 
 // GenerateResponsewActivationMethods generates XML response for AdministrativeMessage digitization.activationmethods message type
-func GenerateResponsewActivationMethods() []byte {
-	response := []byte("<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member><member><name>activationMethods</name><value><array><data><value><struct><member><name>type</name><value>1</value></member><member><name>value</name><value>1(###) ### 4567</value></member></struct></value><value><struct><member><name>type</name><value>2</value></member><member><name>value</name><value>2a***d@anymail.com</value></member></struct></value></data></array></value></member></struct></value></param></params></methodResponse>")
+func GenerateResponsewActivationMethods(ref string) []byte {
+	defaultResp := "<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member><member><name>activationMethods</name><value><array><data><value><struct><member><name>type</name><value>4</value></member><member><name>value</name><value>+27744704621</value></member></struct></value></data></array></value></member></struct></value></param></params></methodResponse>"
+
+	cardMethodList := map[string]string{
+		"VTSTest1": "<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member><member><name>activationMethods</name><value><array><data><value><struct><member><name>type</name><value>1</value></member><member><name>value</name><value>+1(###) ### 4567</value></member></struct></value><value><struct><member><name>type</name><value>2</value></member><member><name>value</name><value>joh***n@anymail.com</value></member></struct></value></data></array></value></member></struct></value></param></params></methodResponse>",
+		"VTSTest2": "<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member><member><name>activationMethods</name><value><array><data><value><struct><member><name>type</name><value>1</value></member><member><name>value</name><value>+1(###) ### 1234</value></member></struct></value><value><struct><member><name>type</name><value>2</value></member><member><name>value</name><value>jan***s@anymail.com</value></member></struct></value></data></array></value></member></struct></value></param></params></methodResponse>",
+	}
+
+	var response []byte
+
+	if _, ok := cardMethodList[ref]; ok {
+		response = []byte(cardMethodList[ref])
+	} else {
+		response = []byte(defaultResp)
+	}
 
 	// responseXML, err := xml.Marshal(response)
 	// if err != nil {

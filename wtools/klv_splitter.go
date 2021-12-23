@@ -13,6 +13,7 @@ func KLVSplitter(s string) {
 		"004": "Original Transaction Amount     ",
 		"010": "Conversion Rate                 ",
 		"026": "Merchant Category Code          ",
+		"032": "Acquiring Instituion Code       ",
 		"037": "Retrieval Reference Number      ",
 		"041": "Terminal ID                     ",
 		"042": "Merchant Identifier             ",
