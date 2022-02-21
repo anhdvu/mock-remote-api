@@ -9,7 +9,7 @@ import (
 	"github.com/anhdvu/mock-remote-api/wtools"
 )
 
-func procReq(w http.ResponseWriter, r *http.Request) {
+func handleRemoteCall(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.Header().Set("Allow", http.MethodPost)
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
@@ -36,14 +36,16 @@ func procReq(w http.ResponseWriter, r *http.Request) {
 	switch payload.MethodName {
 	case "AdministrativeMessage":
 		if payload.Params[2].Value.StringParam == "digitization.activationmethods" {
-			w.Write(wtools.GenerateResponsewActivationMethods(payload.Params[1].Value.StringParam))
+			w.Write(wtools.RespwCVM(payload.Params[1].Value.StringParam))
 		} else {
-			w.Write(wtools.GenerateResponseCodeOnly())
+			w.Write(wtools.RespCodeOnly())
 		}
 	case "Stop":
-		w.Write(wtools.GenerateResponseCodeOnly())
+		w.Write(wtools.RespCodeOnly())
+	case "Balance":
+		w.Write(wtools.RespwBalance())
 	default:
-		w.Write(wtools.GenerateResponseCodeOnly())
+		w.Write(wtools.RespCodeOnly())
 	}
 	fmt.Printf("\n######## INFO: Request parse completed ########\n\n")
 }
@@ -57,20 +59,16 @@ func main() {
 		fmt.Fprintf(w, "Hey there!\nWelcome %s", r.URL.Path[1:])
 	})
 
-	mux.HandleFunc("/wallet", procReq)
-	mux.HandleFunc("/remote", wtools.LogRemoteMessage(wtools.HandleRemoteMessage(*terminal, *password)))
+	mux.HandleFunc("/wallet", handleRemoteCall)
+	mux.Handle("/remote", wtools.LogRemoteMessage(wtools.HandleRemoteMessage(*terminal, *password)))
 
 	fs := http.FileServer(http.Dir("./log/"))
 	mux.Handle("/log/", http.StripPrefix("/log/", fs))
 
-	adm := http.FileServer(http.Dir("adm"))
+	adm := http.FileServer(http.Dir("./adm/"))
 	mux.Handle("/adm/", http.StripPrefix("/adm/", adm))
 
-	logFile := "./log/logs.txt"
-	mux.HandleFunc("/logs", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, logFile)
-	})
-	fmt.Println("Wallet v0.2.20210624 is running...")
-	log.Println("Wallet (Companion + MPQR) v0.4.211223-MPQR is listening on port 8888")
+	fmt.Println("Wallet v0.4.220101 is running...")
+	log.Println("Wallet (Companion + MPQR) v0.4.220121-MPQR is listening on port 8888")
 	log.Fatal(http.ListenAndServe(":8888", mux))
 }

@@ -186,7 +186,7 @@ func ParseRemoteRequestBody(r *http.Request) *Payload {
 
 //  ParseMethod parses payload struct to a specific api method.
 func ParseMethod(payload *Payload) ReqData {
-	var request ReqData // vô duyên vl
+	var request ReqData
 	switch payload.MethodName {
 	case "Deduct", "LoadAuth":
 		request = &DeductLoadAuth{
@@ -265,7 +265,7 @@ func ParseMethod(payload *Payload) ReqData {
 	return request
 }
 
-// DumpJSON function dumps parsed request to os.Stdout in JSON format.
+// ToJSON function dumps parsed request to os.Stdout in JSON format.
 func ToJSON(reqBody ReqData) {
 	reqJSON, err := json.MarshalIndent(reqBody, "", "  ")
 	if err != nil {
@@ -281,7 +281,7 @@ func ToJSON(reqBody ReqData) {
 	fmt.Println(buf.String()) */
 }
 
-// ParseRemoteRequestHeaders parses incoming requests' headers and print to stdout.
+// ParseRemoteRequestHeader parses incoming requests' headers and print to stdout.
 func ParseRemoteRequestHeader(r *http.Request) {
 	for k, v := range r.Header {
 		fmt.Printf("%q: %v\n", k, v)

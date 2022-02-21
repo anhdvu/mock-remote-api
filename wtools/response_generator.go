@@ -43,8 +43,8 @@ func GetRespCode() string {
 	return respCode
 }
 
-// GenerateResponsewText generates XML response.
-func GenerateResponsewText(resultMessage string) []byte {
+// RespwText generates XML response.
+func RespwText(resultMessage string) []byte {
 	response := methodResponse{}
 
 	resultCode := GetRespCode()
@@ -67,8 +67,8 @@ func GenerateResponsewText(resultMessage string) []byte {
 	return responseXML
 }
 
-// GenerateResponseCodeOnly generates XML response for AdministrativeMessage exclusively
-func GenerateResponseCodeOnly() []byte {
+// RespCodeOnly generates XML response for AdministrativeMessage exclusively
+func RespCodeOnly() []byte {
 	response := methodResponse{}
 
 	resultCode := GetRespCode()
@@ -87,13 +87,19 @@ func GenerateResponseCodeOnly() []byte {
 	return responseXML
 }
 
-// GenerateResponsewActivationMethods generates XML response for AdministrativeMessage digitization.activationmethods message type
-func GenerateResponsewActivationMethods(ref string) []byte {
+// RespwCVM generates XML response for AdministrativeMessage digitization.activationmethods message type
+func RespwCVM(ref string) []byte {
 	defaultResp := "<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member><member><name>activationMethods</name><value><array><data><value><struct><member><name>type</name><value>4</value></member><member><name>value</name><value>+27744704621</value></member></struct></value></data></array></value></member></struct></value></param></params></methodResponse>"
 
+	// Dummy data to test.
 	cardMethodList := map[string]string{
-		"VTSTest1": "<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member><member><name>activationMethods</name><value><array><data><value><struct><member><name>type</name><value>1</value></member><member><name>value</name><value>+1(###) ### 4567</value></member></struct></value><value><struct><member><name>type</name><value>2</value></member><member><name>value</name><value>joh***n@anymail.com</value></member></struct></value></data></array></value></member></struct></value></param></params></methodResponse>",
-		"VTSTest2": "<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member><member><name>activationMethods</name><value><array><data><value><struct><member><name>type</name><value>1</value></member><member><name>value</name><value>+1(###) ### 1234</value></member></struct></value><value><struct><member><name>type</name><value>2</value></member><member><name>value</name><value>jan***s@anymail.com</value></member></struct></value></data></array></value></member></struct></value></param></params></methodResponse>",
+		"VTSTest1":    "<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member><member><name>activationMethods</name><value><array><data><value><struct><member><name>type</name><value>1</value></member><member><name>value</name><value>+1(###) ### 4567</value></member></struct></value><value><struct><member><name>type</name><value>2</value></member><member><name>value</name><value>joh***n@anymail.com</value></member></struct></value></data></array></value></member></struct></value></param></params></methodResponse>",
+		"VTSTest2":    "<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member><member><name>activationMethods</name><value><array><data><value><struct><member><name>type</name><value>1</value></member><member><name>value</name><value>+1(###) ### 1234</value></member></struct></value><value><struct><member><name>type</name><value>2</value></member><member><name>value</name><value>jan***s@anymail.com</value></member></struct></value></data></array></value></member></struct></value></param></params></methodResponse>",
+		"VTSTest123":  "<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member><member><name>activationMethods</name><value><array><data><value><struct><member><name>type</name><value>1</value></member><member><name>value</name><value>+1(###) ### 8888</value></member></struct></value><value><struct><member><name>type</name><value>2</value></member><member><name>value</name><value>xo***a@anymail.com</value></member></struct></value></data></array></value></member></struct></value></param></params></methodResponse>",
+		"VTSTest1234": "<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member><member><name>activationMethods</name><value><array><data><value><struct><member><name>type</name><value>1</value></member><member><name>value</name><value>+1(###) ### 9999</value></member></struct></value><value><struct><member><name>type</name><value>2</value></member><member><name>value</name><value>som***s@anymail.com</value></member></struct></value></data></array></value></member></struct></value></param></params></methodResponse>",
+		"VTSTest120":  "<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member><member><name>activationMethods</name><value><array><data><value><struct><member><name>type</name><value>1</value></member><member><name>value</name><value>+27790241919</value></member></struct></value><value><struct><member><name>type</name><value>2</value></member><member><name>value</name><value>tumimalesela1@gmail.com</value></member></struct></value></data></array></value></member></struct></value></param></params></methodResponse>",
+		"VTSTest121":  "<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member><member><name>activationMethods</name><value><array><data><value><struct><member><name>type</name><value>1</value></member><member><name>value</name><value>+27790241919</value></member></struct></value><value><struct><member><name>type</name><value>2</value></member><member><name>value</name><value>tumimalesela1@gmail.com</value></member></struct></value></data></array></value></member></struct></value></param></params></methodResponse>",
+		"VTSTest122":  "<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member><member><name>activationMethods</name><value><array><data><value><struct><member><name>type</name><value>1</value></member><member><name>value</name><value>+27790241919</value></member></struct></value><value><struct><member><name>type</name><value>2</value></member><member><name>value</name><value>tumimalesela1@gmail.com</value></member></struct></value></data></array></value></member></struct></value></param></params></methodResponse>",
 	}
 
 	var response []byte
@@ -104,12 +110,17 @@ func GenerateResponsewActivationMethods(ref string) []byte {
 		response = []byte(defaultResp)
 	}
 
-	// responseXML, err := xml.Marshal(response)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// fmt.Printf("%v\n", string(responseXML))
-	// return responseXML
+	fmt.Printf("%v\n", string(response))
+	return response
+}
+
+// RespwBalance generates XML response for Balance call
+func RespwBalance() []byte {
+	defaultResp := "<methodResponse><params><param><value><struct><member><name>resultCode</name><value><int>1</int></value></member><member><name>balanceAmount</name><value><int>626900</int></value></member></struct></value></param></params></methodResponse>"
+
+	var response []byte
+
+	response = []byte(defaultResp)
 	fmt.Printf("%v\n", string(response))
 	return response
 }
