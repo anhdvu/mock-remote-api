@@ -70,5 +70,5 @@ func main() {
 
 	fmt.Println("Wallet v0.4.220101 is running...")
 	log.Println("Wallet (Companion + MPQR) v0.4.220121-MPQR is listening on port 80")
-	log.Fatal(http.ListenAndServe(":80", mux))
+	log.Fatal(http.ListenAndServe(":2222", mux))
 }
