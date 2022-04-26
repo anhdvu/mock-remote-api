@@ -68,7 +68,7 @@ func main() {
 	adm := http.FileServer(http.Dir("./adm/"))
 	mux.Handle("/adm/", http.StripPrefix("/adm/", adm))
 
-	fmt.Println("Wallet v0.4.220101 is running...")
-	log.Println("Wallet (Companion + MPQR) v0.4.220121-MPQR is listening on port 80")
-	log.Fatal(http.ListenAndServe(":2222", mux))
+	fmt.Println("Wallet (Companion + MPQR + RemoteMessaging) v0.4.220426-MPQR is listening on port 8888")
+	log.Println("Wallet (Companion + MPQR + RemoteMessaging) v0.4.220426-MPQR is listening on port 8888")
+	log.Fatal(http.ListenAndServe(":8888", mux))
 }

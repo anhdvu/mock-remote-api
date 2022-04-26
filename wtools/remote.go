@@ -14,20 +14,23 @@ import (
 )
 
 type RemoteMessage struct {
-	MessageType               string             `json:"messageType"`
-	TrackingNumber            string             `json:"trackingNumber"`
+	ActivationMethods         []ActivationMethod `json:"activationMethods,omitempty"`
+	Challenge                 string             `json:"challenge,omitempty"`
+	CurrencyCode              string             `json:"currencyCode,omitempty"`
 	CustomerReference         string             `json:"customerReference"`
-	EventType                 string             `json:"eventType,omitempty"`
 	DigitizedDeviceIdentifier string             `json:"digitizedDeviceIdentifier,omitempty"`
+	DigitizedFpanMasked       string             `json:"digitizedFpanMasked,omitempty"`
 	DigitizedPan              string             `json:"digitizedPan,omitempty"`
 	DigitizedPanExpiry        string             `json:"digitizedPanExpiry,omitempty"`
-	DigitizedFpanMasked       string             `json:"digitizedFpanMasked,omitempty"`
 	DigitizedTokenReference   string             `json:"digitizedTokenReference,omitempty"`
-	WalletIdentifier          string             `json:"walletIdentifier,omitempty"`
-	Challenge                 string             `json:"challenge,omitempty"`
-	TokenRequestorID          string             `json:"tokenRequestorId,omitempty"`
-	ActivationMethods         []ActivationMethod `json:"activationMethods,omitempty"`
+	EventType                 string             `json:"eventType,omitempty"`
+	MerchantDescription       string             `json:"merchantDescription,omitempty"`
+	MessageType               string             `json:"messageType"`
 	ResultCode                string             `json:"resultCode,omitempty"`
+	TokenRequestorID          string             `json:"tokenRequestorId,omitempty"`
+	TrackingNumber            string             `json:"trackingNumber"`
+	TransactionAmount         string             `json:"transactionAmount,omitempty"`
+	WalletIdentifier          string             `json:"walletIdentifier,omitempty"`
 }
 
 type ActivationMethod struct {
